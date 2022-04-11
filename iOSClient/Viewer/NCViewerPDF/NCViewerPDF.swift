@@ -31,7 +31,8 @@ class NCViewerPDF: UIViewController, NCViewerPDFSearchDelegate {
     var imageIcon: UIImage?
 
     private var pdfView = PDFView()
-    private var thumbnailViewHeight: CGFloat = 40
+    private var thumbnailDimension: CGFloat = 40
+    private let animationDuration: TimeInterval = 0.25
     private var pdfThumbnailView = PDFThumbnailView()
     private var pdfDocument: PDFDocument?
     private let pageView = UIView()
@@ -64,17 +65,19 @@ class NCViewerPDF: UIViewController, NCViewerPDFSearchDelegate {
 
         pdfThumbnailView.translatesAutoresizingMaskIntoConstraints = false
         pdfThumbnailView.pdfView = pdfView
-        pdfThumbnailView.layoutMode = .horizontal
-        pdfThumbnailView.thumbnailSize = CGSize(width: 40, height: thumbnailViewHeight)
+        pdfThumbnailView.layoutMode = .vertical
+        pdfThumbnailView.thumbnailSize = CGSize(width: thumbnailDimension, height: thumbnailDimension)
         pdfThumbnailView.backgroundColor = .clear
         // pdfThumbnailView.layer.shadowOffset.height = -5
         // pdfThumbnailView.layer.shadowOpacity = 0.25
 
         view.addSubview(pdfThumbnailView)
 
-        pdfThumbnailView.heightAnchor.constraint(equalToConstant: thumbnailViewHeight).isActive = true
+        pdfThumbnailView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        pdfThumbnailView.widthAnchor.constraint(equalToConstant: thumbnailDimension).isActive = true
+        //pdfThumbnailView.heightAnchor.constraint(equalToConstant: thumbnailDimension).isActive = true
         pdfThumbnailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        pdfThumbnailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        //pdfThumbnailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         pdfThumbnailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
 
         pageView.translatesAutoresizingMaskIntoConstraints = false
@@ -289,7 +292,7 @@ class NCViewerPDF: UIViewController, NCViewerPDFSearchDelegate {
         } else {
 
             let point = recognizer.location(in: pdfView)
-            if point.y > pdfView.frame.height - thumbnailViewHeight { return }
+            if point.y > pdfView.frame.height - thumbnailDimension { return }
 
             navigationController?.setNavigationBarHidden(true, animated: false)
             pdfThumbnailView.isHidden = true
